@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Step 1: Generate HTTP Network Traffic with curl
+echo "Generating HTTP traffic..."
+curl http://example.com
+
+# Step 2: Simulate Malicious Traffic with hping3 (SYN flood to port 80)
+# Replace 192.168.1.1 with your target IP
+echo "Simulating SYN flood attack to trigger Suricata alerts..."
+hping3 -S 192.168.1.1 -p 80 --flood -c 1000
+
+# Step 3: View Zeek HTTP Logs
+echo "Viewing Zeek HTTP logs..."
+cat /nsm/bro/logs/current/http.log | less
+
+# Step 4: View Suricata Alerts in eve.json
+echo "Viewing Suricata alerts..."
+cat /nsm/suricata/logs/eve.json | jq
+
+# Step 5: Kibana Usage Instructions
+echo "To visualize and analyze logs, visit Kibana in your web browser:"
+echo "Open Kibana > Discover, and use a query like:"
+echo 'event.module: "bro" AND event.dataset: "bro.http"'
